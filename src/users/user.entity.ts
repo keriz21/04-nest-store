@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   Column,
@@ -15,7 +17,9 @@ export class User {
   name: string;
   @Column()
   email: string;
+
   @Column()
+  @Exclude()
   password: string;
 
   @AfterInsert()
