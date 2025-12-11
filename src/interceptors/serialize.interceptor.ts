@@ -5,11 +5,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { Observable, pipe } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
 interface ClassConstructor {
-  new (...args: any[]): {};
+  new (...args: any[]): object;
 }
 
 export function Serialize(dto: ClassConstructor) {
@@ -17,7 +17,7 @@ export function Serialize(dto: ClassConstructor) {
 }
 
 export class SerializeInterceptor implements NestInterceptor {
-  constructor(private dto: any) {}
+  constructor(private dto: ClassConstructor) {}
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
@@ -29,6 +29,5 @@ export class SerializeInterceptor implements NestInterceptor {
         });
       }),
     );
-    // map((data: any) => {
   }
 }
