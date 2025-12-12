@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Exclude } from 'class-transformer';
+import { Item } from '../items/item.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  AfterInsert,
-  AfterRemove,
-  AfterUpdate,
+  OneToMany,
+  // AfterInsert,
+  // AfterRemove,
+  // AfterUpdate,
 } from 'typeorm';
 
 @Entity()
@@ -22,18 +24,24 @@ export class User {
   @Exclude()
   password: string;
 
-  @AfterInsert()
-  logInsert() {
-    console.log('Inserted User with id:', this.id);
-  }
+  @Column({ default: false })
+  admin: boolean;
 
-  @AfterUpdate()
-  logUpdate() {
-    console.log('Updaded User with id:', this.id);
-  }
+  @OneToMany(() => Item, (item) => item.user)
+  items: Item[];
 
-  @AfterRemove()
-  logRemove() {
-    console.log('Removed User with id:', this.id);
-  }
+  // @AfterInsert()
+  // logInsert() {
+  //   console.log('Inserted User with id:', this.id);
+  // }
+
+  // @AfterUpdate()
+  // logUpdate() {
+  //   console.log('Updaded User with id:', this.id);
+  // }
+
+  // @AfterRemove()
+  // logRemove() {
+  //   console.log('Removed User with id:', this.id);
+  // }
 }

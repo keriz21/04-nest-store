@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Controller,
   Post,
@@ -13,7 +14,7 @@ import { Serialize } from '../interceptors/serialize.interceptor';
 import { CreateUserDtoAuth } from './dtos/create-user.dto';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
-import { User } from 'src/users/user.entity';
+import { User } from '../users/user.entity';
 
 @Controller('auth')
 @Serialize(UserDto)

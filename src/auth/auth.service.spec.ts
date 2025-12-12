@@ -7,10 +7,22 @@ describe('AuthService', () => {
   let service: AuthService;
   let fakeUsersService: Partial<UsersService>;
   beforeEach(async () => {
+    const users: User[] = [];
     fakeUsersService = {
-      findAll: () => Promise.resolve([]),
+      findAll: (email: string) => {
+        const user = users.filter((user) => user.email === email);
+        return Promise.resolve(user);
+      },
       create: (name: string, email: string, password: string) => {
-        return Promise.resolve({ id: 1, name, email, password } as User);
+        // return Promise.resolve({ id: 1, name, email, password } as User);
+        const user = {
+          id: Math.floor(Math.random() * 9999),
+          name,
+          email,
+          password,
+        } as User;
+        users.push(user);
+        return Promise.resolve(user);
       },
     };
     const module: TestingModule = await Test.createTestingModule({
@@ -42,16 +54,7 @@ describe('AuthService', () => {
   });
 
   it('should fail to register a user with an existing email', async () => {
-    fakeUsersService.findAll = () => {
-      return Promise.resolve([
-        {
-          id: 1,
-          name: 'Test User',
-          email: 'bedak@ikan.com',
-          password: 'mypassword',
-        } as User,
-      ]);
-    };
+    await service.register('Test User', 'bedak@ikan.com', 'mypassword');
 
     await expect(
       service.register('Test User', 'bedak@ikan.com', 'mypassword'),
@@ -65,16 +68,7 @@ describe('AuthService', () => {
   });
 
   it('should fail to login with incorrect password', async () => {
-    fakeUsersService.findAll = () => {
-      return Promise.resolve([
-        {
-          id: 1,
-          name: 'Test User',
-          email: 'bedak@ikan.com',
-          password: 'mypassword',
-        } as User,
-      ]);
-    };
+    await service.register('Test User', 'bedak@ikan.com', 'mypassword');
 
     await expect(
       service.login('bedak@ikan.com', 'wrongpassword'),
@@ -82,17 +76,7 @@ describe('AuthService', () => {
   });
 
   it('should login successfully with correct credentials', async () => {
-    fakeUsersService.findAll = () => {
-      return Promise.resolve([
-        {
-          id: 1,
-          name: 'Test User',
-          email: 'bedak@ikan.com',
-          password:
-            'b5666071a5e06a0d.b578a7f32d42af4bf7e6e6f4e0eac171cea569476acb980b31df63dc343097982692ba2203d4ce9d0ca57acdcbc2f14a03f2362cf8f0c21595db1e2ca6bb0919',
-        } as User,
-      ]);
-    };
+    await service.register('Test User', 'bedak@ikan.com', 'mypassword');
 
     const user = await service.login('bedak@ikan.com', 'mypassword');
     expect(user).toBeDefined();
